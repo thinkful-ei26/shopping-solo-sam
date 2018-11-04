@@ -27,16 +27,20 @@ function handleCheckboxClicked () {
 
 function handleSearch() {
   $('#js-search-form').on('submit', event => {
-    console.log('woohoo');
+    
     event.preventDefault();
     const newSearchItem = $('#js_item_search').val().trim();
+    console.log('woohoo');
+    console.log(newSearchItem);
     $('li').addClass('hidden');
-    $('li').has("span:contains(' + newSearchItem + ')").removeClass('hidden');
+    // eslint-disable-next-line quotes
+    $( "li:contains('apples')" ).removeClass('hidden');
     // if  (newSearchItem !== STORE.items.name addClass(hidden)
   });
 }
 function clearSearch() {
   $('#clearButton').click(event => {
+    console.log('clear search ran');
     $('li').removeClass('hidden');
   });
 }
@@ -171,6 +175,7 @@ function handleShoppingList() {
   handleDeleteItemClicked();
   handleCheckboxClicked ();
   handleSearch();
+  clearSearch();
 }
 
 // when the page loads, call `handleShoppingList`
