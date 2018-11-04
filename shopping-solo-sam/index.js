@@ -2,7 +2,7 @@
 
 // `STORE` holds all of the data used to render
 const STORE = {
-  items: [{name: 'apples', checked: false},
+  items: [{name: 'apples', checked: false, search:false},
     {name: 'oranges', checked: false},
     {name: 'milk', checked: true},
     {name: 'bread', checked: false}],
@@ -14,15 +14,32 @@ const STORE = {
 function handleCheckboxClicked () {
   $('#js-checkbox').click(event => {
     STORE.hideCompleted = !STORE.hideCompleted;
-    if (STORE.items.checked === true) {
-      // make true items hidden ?????
-    } 
+    if (STORE.hideCompleted === true) {
+      $('li').has('.shopping-item__checked').addClass('hidden');
+    } else {
+      $('li.hidden').removeClass('hidden');
+    }
     console.log(STORE);
     console.log('handle checkbox clicked ran');
   });
-  renderShoppingList();
+  // renderShoppingList();
 }
 
+function handleSearch() {
+  $('#js-search-form').on('submit', event => {
+    console.log('woohoo');
+    event.preventDefault();
+    const newSearchItem = $('#js_item_search').val().trim();
+    $('li').addClass('hidden');
+    $('li').has("span:contains(' + newSearchItem + ')").removeClass('hidden');
+    // if  (newSearchItem !== STORE.items.name addClass(hidden)
+  });
+}
+function clearSearch() {
+  $('#clearButton').click(event => {
+    $('li').removeClass('hidden');
+  });
+}
 // responsible for generating a string representing a
 // single shopping list item.
 function generateItemElement(item, itemIndex, template) {
@@ -56,10 +73,12 @@ function renderShoppingList() {
   // generate the string to represent the shopping list
   const shoppingListItemsString = generateShoppingItemsString(STORE.items);
   // insert that HTML into the DOM
+
+
   $('.js-shopping-list').html(shoppingListItemsString);
 }
 
-// name says it all -- given a name, add a new item 
+// given a name, add a new item 
 // to the store
 function addItemToShoppingList(itemName) {
   console.log(`Adding "${itemName}" to shopping list`);
@@ -69,13 +88,17 @@ function addItemToShoppingList(itemName) {
 // when users submit a new item, push a new item onto the
 // store and re-render the list in the DOM
 function handleNewItemSubmit() {
-  $('#js-shopping-list-form').submit(function(event) {
+  $('#js-shopping-list-form').on('submit', event => {
+    
     event.preventDefault();
-    console.log('`handleNewItemSubmit` ran');
-    const newItemName = $('.js-shopping-list-entry').val();
+    console.log(`'handleNewItemSubmit ran ${event.target.id}'` + event.target.id);
+    const newItemName = $('.js-shopping-list-entry').val().trim();
     $('.js-shopping-list-entry').val('');
-    addItemToShoppingList(newItemName);
-    renderShoppingList();
+    if (newItemName !== '') {
+      addItemToShoppingList(newItemName);
+      renderShoppingList();
+    }
+    
   });
 }
 
@@ -147,7 +170,9 @@ function handleShoppingList() {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleCheckboxClicked ();
+  handleSearch();
 }
 
 // when the page loads, call `handleShoppingList`
 $(handleShoppingList);
+
